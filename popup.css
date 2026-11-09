@@ -22,6 +22,8 @@ header p { margin: 2px 0 0; color: #64748b; font-size: 12px; }
   line-height: 1.5;
   font-weight: 600;
 }
+.theme { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.theme input { width: 16px; height: 16px; margin: 0; accent-color: #6d47d9; }
 fieldset { margin: 0; padding: 0; border: 0; }
 legend { margin-bottom: 10px; font-size: 13px; font-weight: 650; }
 .colours { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }

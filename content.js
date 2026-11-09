@@ -33,7 +33,32 @@
     }
   }
 
-  function paint(root) {
+  function pageColors() {
+    const main = document.querySelector("main, article, [role='main']") || document.body;
+    let background = "#ffffff";
+    for (let element = main; element; element = element.parentElement) {
+      const color = getComputedStyle(element).backgroundColor;
+      const alpha = color.match(/rgba\([^)]*,\s*([\d.]+)\)$/) || color.match(/\/\s*([\d.]+)\s*\)$/);
+      if (color !== "transparent" && (!alpha || Number(alpha[1]) === 1)) {
+        background = color;
+        break;
+      }
+    }
+
+    const accents = new Map();
+    let inspected = 0;
+    for (const element of main.querySelectorAll("a, button, h1, h2")) {
+      if (++inspected > 80) break;
+      if (!element.getClientRects().length) continue;
+      const color = getComputedStyle(element).color;
+      const rgb = Beeline.parseColor(color);
+      if (rgb && Math.max(...rgb) - Math.min(...rgb) >= 24) accents.set(color, (accents.get(color) || 0) + 1);
+    }
+    const accent = [...accents.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
+    return Beeline.themeColors(accent || background, background);
+  }
+
+  function paint(root, colors) {
     const words = [...root.querySelectorAll(".beeline-word")];
     const lines = [];
     for (const word of words) {
@@ -51,7 +76,7 @@
         const position = length ? (offset + word.textContent.length / 2) / length : 0;
         const directedPosition = lineIndex % 2 ? 1 - position : position;
         word.style.color = Beeline.gradientColor(
-          [settings.start, settings.middle, settings.end],
+          colors,
           directedPosition,
           baseColor,
           settings.intensity
@@ -61,14 +86,22 @@
     }
   }
 
+  function repaint() {
+    const colors = settings.autoTheme ? pageColors() : [settings.start, settings.middle, settings.end];
+    for (const root of document.querySelectorAll("[data-beeline-root]")) paint(root, colors);
+  }
+
+  function scheduleRepaint() {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(repaint);
+  }
+
   function enable() {
     const roots = [...document.querySelectorAll(ROOTS)].filter(
       (element) => !element.parentElement.closest(ROOTS)
     );
-    for (const root of roots) {
-      wrap(root);
-      paint(root);
-    }
+    for (const root of roots) wrap(root);
+    repaint();
   }
 
   function disable() {
@@ -86,12 +119,7 @@
     settings = Beeline.normalizeSettings(next);
     if (!settings.enabled) disable();
     else if (!wasEnabled) enable();
-    else {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        for (const root of document.querySelectorAll("[data-beeline-root]")) paint(root);
-      });
-    }
+    else scheduleRepaint();
   }
 
   chrome.storage.sync.get(Beeline.DEFAULTS, update);
@@ -103,10 +131,6 @@
   });
 
   window.addEventListener("resize", () => {
-    if (!settings.enabled) return;
-    cancelAnimationFrame(frame);
-    frame = requestAnimationFrame(() => {
-      for (const root of document.querySelectorAll("[data-beeline-root]")) paint(root);
-    });
+    if (settings.enabled) scheduleRepaint();
   });
 })();
