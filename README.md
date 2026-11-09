@@ -6,6 +6,10 @@ Beeliner is a small, open-source Chrome extension that adds a gentle colour grad
 
 If you enjoy long reads but sometimes lose your place, give Beeliner a try. Choose colours that feel good to you, soften them with the intensity slider, and make yourself comfortable.
 
+<p align="center">
+  <img src="docs/beeliner-popup.webp" width="360" alt="Beeliner’s Chrome popup with an on switch, start, middle and end colour pickers, and a colour intensity slider.">
+</p>
+
 ## Why you might like it
 
 - **Make it yours:** choose the start, middle, and end colours.
