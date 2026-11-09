@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Beeline Comfort Reader</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>Beeline</h1>
+          <p>Comfort Reader</p>
+        </div>
+        <label class="toggle">
+          <input id="enabled" type="checkbox" />
+          <span>On</span>
+        </label>
+      </header>
+
+      <div class="preview" aria-hidden="true">Follow the colours. Find the next line.</div>
+
+      <fieldset id="controls">
+        <legend>Gradient colours</legend>
+        <div class="colours">
+          <label>Start<input id="start" type="color" /></label>
+          <label>Middle<input id="middle" type="color" /></label>
+          <label>End<input id="end" type="color" /></label>
+        </div>
+        <label class="intensity" for="intensity">
+          <span>Colour intensity</span>
+          <output id="intensity-value" for="intensity">70%</output>
+        </label>
+        <input id="intensity" type="range" min="0" max="100" step="1" />
+      </fieldset>
+
+      <button id="reset" type="button">Reset to defaults</button>
+      <p class="hint">Lower intensity blends the gradient with the page’s original text colour.</p>
+    </main>
+    <script src="beeline.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
