@@ -20,10 +20,27 @@ function contrast(a, b) {
   return (light + 0.05) / (dark + 0.05);
 }
 
-for (const [accent, background] of [["#2563eb", "#ffffff"], ["#c4b5fd", "#17131f"], ["#333330", "#f7f5ee"]]) {
+function distance(a, b) {
+  return Math.round(Math.hypot(...parseColor(a).map((channel, index) => channel - parseColor(b)[index])));
+}
+
+const themes = [
+  ["sample article", "rgb(42, 69, 200)", "rgb(247, 245, 239)", "rgb(23, 22, 15)"],
+  ["blue on white", "#2563eb", "#ffffff", "#222222"],
+  ["dark", "#c4b5fd", "#17131f", "#e9e4f0"],
+  ["warm", "#333330", "#f7f5ee", "#17160f"],
+  ["monochrome", "#222222", "#ffffff", "#222222"],
+];
+for (const [name, accent, background, base] of themes) {
   const palette = themeColors(accent, background);
-  assert.equal(new Set(palette).size, 3);
-  for (const color of palette) assert.ok(contrast(color, background) >= 4.5, `${color} on ${background}`);
+  assert.equal(new Set(palette).size, 3, `${name} needs three distinct stops`);
+  for (const color of palette) assert.ok(contrast(color, background) >= 4.5, `${name}: ${color} on ${background}`);
+  for (const [intensity, adjacent, full] of [[56, 25, 40], [70, 30, 45]]) {
+    const shown = [0, 0.5, 1].map((position) => gradientColor(palette, position, base, intensity));
+    const gaps = [distance(shown[0], shown[1]), distance(shown[1], shown[2])];
+    assert.ok(Math.max(...gaps) >= adjacent, `${name} is too flat at ${intensity}%: ${gaps.join(", ")}`);
+    assert.ok(distance(shown[0], shown[2]) >= full, `${name} lacks line-direction contrast at ${intensity}%`);
+  }
 }
 for (const color of themeColors("#222222", "#ffffff")) {
   const [r, g, b] = parseColor(color);

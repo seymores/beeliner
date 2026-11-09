@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Beeline Comfort Reader",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Read articles with a line-guiding colour gradient that automatically complements the page theme.",
   "permissions": ["storage"],
   "action": {

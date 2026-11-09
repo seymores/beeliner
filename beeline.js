@@ -73,11 +73,11 @@
     const useAccent = themeSaturation >= 0.18;
     const hue = useAccent ? themeHue : backgroundHue;
     const sourceSaturation = useAccent ? themeSaturation : backgroundSaturation;
-    const saturation = sourceSaturation < 0.06 ? 0 : Math.min(0.62, Math.max(useAccent ? 0.32 : 0.24, sourceSaturation));
+    const saturation = sourceSaturation < 0.06 ? 0 : Math.min(0.72, Math.max(useAccent ? 0.5 : 0.24, sourceSaturation));
     const lightBackground = contrast(background, [0, 0, 0]) >= contrast(background, [255, 255, 255]);
-    const lightnesses = lightBackground ? [0.3, 0.4, 0.3] : [0.74, 0.64, 0.74];
+    const lightnesses = lightBackground ? [0.46, 0.36, 0.2] : [0.82, 0.64, 0.92];
 
-    return [-18, 0, 18].map((offset, index) => {
+    return [-24, 0, 24].map((offset, index) => {
       let lightness = lightnesses[index];
       let color = hslToRgb(hue + offset, saturation, lightness);
       while (contrast(color, background) < 4.5 && lightness > 0 && lightness < 1) {
